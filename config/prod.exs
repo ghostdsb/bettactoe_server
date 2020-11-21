@@ -14,7 +14,9 @@ http: [port: {:system, "PORT"}],
 url: [scheme: "https", host: "still-plains-97814.herokuapp.com", port: 443],
 check_origin: [
   "https://still-plains-97814.herokuapp.com",
-  "https://www.still-plains-97814.herokuapp.com"
+  "https://www.still-plains-97814.herokuapp.com",
+  "https://ghostdsb.github.io",
+  "https://ghostdsb.github.io/bettactoe"
 ],
 force_ssl: [rewrite_on: [:x_forwarded_proto]],
 cache_static_manifest: "priv/static/cache_manifest.json"
