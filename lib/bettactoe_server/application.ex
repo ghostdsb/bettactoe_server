@@ -8,13 +8,14 @@ defmodule BettactoeServer.Application do
   def start(_type, _args) do
     children = [
       # Start the Ecto repository
-      BettactoeServer.Repo,
+      # BettactoeServer.Repo,
       # Start the Telemetry supervisor
       BettactoeServerWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: BettactoeServer.PubSub},
       # Start the Endpoint (http/https)
-      BettactoeServerWeb.Endpoint
+      BettactoeServerWeb.Endpoint,
+      Garuda.Matchmaker.MatchmakerSupervisor
       # Start a worker by calling: BettactoeServer.Worker.start_link(arg)
       # {BettactoeServer.Worker, arg}
     ]

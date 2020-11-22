@@ -3,6 +3,7 @@ defmodule BettactoeServerWeb.UserSocket do
 
   ## Channels
   channel "room:*", BettactoeServerWeb.BttChannel
+  channel "garuda_matchmaker:*", Garuda.Matchmaker.MatchmakerChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -16,8 +17,9 @@ defmodule BettactoeServerWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+  def connect(params, socket, _connect_info) do
+    IO.puts("conn params #{inspect(params)}")
+    {:ok, assign(socket, :player_id, params["playerId"])}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
