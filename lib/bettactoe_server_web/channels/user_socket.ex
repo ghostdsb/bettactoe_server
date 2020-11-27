@@ -2,7 +2,7 @@ defmodule BettactoeServerWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "room:*", BettactoeServerWeb.BttChannel
+  channel "btt:*", BettactoeServerWeb.BttChannel
   channel "garuda_matchmaker:*", Garuda.Matchmaker.MatchmakerChannel
 
   # Socket params are passed from the client and can

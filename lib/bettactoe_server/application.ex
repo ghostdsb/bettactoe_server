@@ -15,7 +15,9 @@ defmodule BettactoeServer.Application do
       {Phoenix.PubSub, name: BettactoeServer.PubSub},
       # Start the Endpoint (http/https)
       BettactoeServerWeb.Endpoint,
-      Garuda.Matchmaker.MatchmakerSupervisor
+      Garuda.Matchmaker.MatchmakerSupervisor,
+      {Registry, keys: :unique, name: BettactoeServerWeb.GameRegistry},
+      {DynamicSupervisor, strategy: :one_for_one, name: BettactoeServerWeb.BttSupervisor},
       # Start a worker by calling: BettactoeServer.Worker.start_link(arg)
       # {BettactoeServer.Worker, arg}
     ]
