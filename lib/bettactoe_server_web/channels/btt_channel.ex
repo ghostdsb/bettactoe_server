@@ -5,8 +5,8 @@ defmodule BettactoeServerWeb.BttChannel do
 
   intercept [ "start_game" ]
 
-  def join("btt:" <> match_id, _params, socket) do
-    Process.send_after(self(), {"after_join", match_id}, 500)
+  def join("btt:" <> match_id, params, socket) do
+    Process.send_after(self(), {"after_join", match_id, params["name"]}, 500)
     {:ok, socket}
   end
 
@@ -51,12 +51,12 @@ defmodule BettactoeServerWeb.BttChannel do
     {:noreply, socket}
   end
 
-  def handle_info({"after_join", match_id}, socket) do
+  def handle_info({"after_join", match_id, name}, socket) do
     socket = assign(socket, :match_id, match_id)
 
     match_id
     |> create_btt_room()
-    |> add_player_to_btt_room(match_id, socket)
+    |> add_player_to_btt_room(match_id, name, socket)
 
     {:noreply, socket}
   end
@@ -69,20 +69,20 @@ defmodule BettactoeServerWeb.BttChannel do
     )
   end
 
-  defp add_player_to_btt_room({:ok, _child}, match_id, socket) do
-    match_id |> join_player(socket.assigns.player_id)
+  defp add_player_to_btt_room({:ok, _child}, match_id, name, socket) do
+    match_id |> join_player(socket.assigns.player_id, name)
   end
 
-  defp add_player_to_btt_room({:error, {:already_started, _}}, match_id, socket) do
-    match_id |> join_player(socket.assigns.player_id)
+  defp add_player_to_btt_room({:error, {:already_started, _}}, match_id, name, socket) do
+    match_id |> join_player(socket.assigns.player_id, name)
   end
 
-  defp add_player_to_btt_room(_, _, _) do
+  defp add_player_to_btt_room(_, _, _, _) do
     "error"
   end
 
-  defp join_player(match_id, player_id) do
-    BttRoom.join(Records.via_tuple(match_id), player_id)
+  defp join_player(match_id, player_id, name) do
+    BttRoom.join(Records.via_tuple(match_id), player_id, name)
   end
 
 end

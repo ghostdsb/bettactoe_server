@@ -18,12 +18,14 @@ defmodule BettactoeServer.BttRoom do
     move_count: 0,
     match_id: nil,
     player_1: %{
+      name: "",
       id: nil,
       bet: 0,
       balance: 100,
       status: "bet"
     },
     player_2: %{
+      name: "",
       id: nil,
       bet: 0,
       balance: 100,
@@ -42,8 +44,8 @@ defmodule BettactoeServer.BttRoom do
     GenServer.call(match_pid, "show_game_state")
   end
 
-  def join(match_pid, player_id) do
-    GenServer.call(match_pid, {"add_player", player_id})
+  def join(match_pid, player_id, name) do
+    GenServer.call(match_pid, {"add_player", player_id, name})
   end
 
   def bet(match_pid, player_id, bet_value) do
@@ -63,8 +65,8 @@ defmodule BettactoeServer.BttRoom do
     {:reply, show_current_game_state(game_state), game_state}
   end
 
-  def handle_call({"add_player", player_id}, _from, game_state) do
-    game_state = game_state |> add_player_to_game(player_id)
+  def handle_call({"add_player", player_id, name}, _from, game_state) do
+    game_state = game_state |> add_player_to_game(player_id, name)
     {:reply, game_state, game_state}
   end
 
@@ -95,14 +97,15 @@ defmodule BettactoeServer.BttRoom do
     game_state
   end
 
-  defp add_player_to_game(game_state, player_id) do
-    initialise_player_data(game_state.player_list, game_state, player_id)
+  defp add_player_to_game(game_state, player_id, name) do
+    initialise_player_data(game_state.player_list, game_state, player_id, name)
   end
 
-  defp initialise_player_data([], game_state, player_id) do
+  defp initialise_player_data([], game_state, player_id, name) do
     %{game_state |
     player_list: [player_id],
     player_1: %{
+      name: name,
       id: player_id,
       bet: 0,
       balance: 100,
@@ -111,10 +114,11 @@ defmodule BettactoeServer.BttRoom do
   }
   end
 
-  defp initialise_player_data([player1], game_state, player_id) do
+  defp initialise_player_data([player1], game_state, player_id, name) do
     gamestate = %{game_state |
     player_list: [player1, player_id],
     player_2: %{
+      name: name,
       id: player_id,
       bet: 0,
       balance: 100,
@@ -183,13 +187,13 @@ defmodule BettactoeServer.BttRoom do
         bet_winner(game_state) === 2 -> %{game_state | turn: hd(tl(game_state.player_list)) }
         true -> %{game_state |
         player_1: %{
-          id:  game_state.player_1.player_id,
+          id:  game_state.player_1.id,
           bet: 0,
           balance: game_state.player_1.balance,
           status: "bet"
         },
         player_2: %{
-          id:  game_state.player_2.player_id,
+          id:  game_state.player_2.id,
           bet: 0,
           balance: game_state.player_2.balance,
           status: "bet"
