@@ -136,9 +136,13 @@ defmodule BettactoeServer.BttRoom do
 
   defp place_bets(game_state, true, _player_id, _bet_value) ,do: game_state
   defp place_bets(game_state, false, player_id, bet_value) do
-    game_state
+    gs = game_state
     |> update_bet_status(player_id, bet_value)
     |> update_move_status
+
+    IO.puts("gs #{inspect(gs)}")
+
+    gs
   end
 
   defp update_bet_status(game_state, player_id, bet_value) do
@@ -197,7 +201,8 @@ defmodule BettactoeServer.BttRoom do
           bet: 0,
           balance: game_state.player_2.balance,
           status: "bet"
-        }
+        },
+        turn: "continue"
       }
       end
       true -> game_state

@@ -22,6 +22,7 @@ defmodule BettactoeServerWeb.BttChannel do
         IO.puts("waiting for other player")
       true ->
         broadcast(socket, "bet_res", %{
+        "board" => gs.board,
         "turn" => %{id: gs.turn},
         "p1" => %{id: gs.player_1.id, bet: gs.player_1.bet, balance: gs.player_1.balance},
         "p2" => %{id: gs.player_2.id, bet: gs.player_2.bet, balance: gs.player_2.balance}})
