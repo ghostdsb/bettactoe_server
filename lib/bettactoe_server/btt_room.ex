@@ -32,7 +32,7 @@ defmodule BettactoeServer.BttRoom do
       status: "bet"
     },
     player_list: [],
-    gameover: %{state: false, winner: nil}
+    gameover: %{state: false, winner: nil, pattern: []}
   )
 
   ##CLIENT API################################
@@ -130,7 +130,7 @@ defmodule BettactoeServer.BttRoom do
     gamestate
   end
 
-  defp initialise_player_data([_player2, _player1], game_state, _player_id) do
+  defp initialise_player_data([_player2, _player1], game_state, _player_id, _name) do
     game_state
   end
 
@@ -242,9 +242,10 @@ defmodule BettactoeServer.BttRoom do
       player_2: player_2_details,
       turn: nil
     }
+    gameover_status = is_gameover(game_state.board, player_id)
     game_state =
     cond do
-      is_gameover?(game_state.board, player_id) -> %{game_state | gameover: %{state: true, winner: player_id}}
+      gameover_status.result -> %{game_state | gameover: %{state: true, winner: player_id, pattern: gameover_status.pattern}}
       true -> game_state
     end
     game_state
@@ -253,14 +254,14 @@ defmodule BettactoeServer.BttRoom do
   defp place_mark(game_state, _index, false, _), do: game_state
 
 
-  defp is_gameover?([x,x,x,_,_,_,_,_,_], x) ,do: true
-  defp is_gameover?([_,_,_,x,x,x,_,_,_], x) ,do: true
-  defp is_gameover?([_,_,_,_,_,_,x,x,x], x) ,do: true
-  defp is_gameover?([x,_,_,x,_,_,x,_,_], x) ,do: true
-  defp is_gameover?([_,x,_,_,x,_,_,x,_], x) ,do: true
-  defp is_gameover?([_,_,x,_,_,x,_,_,x], x) ,do: true
-  defp is_gameover?([x,_,_,_,x,_,_,_,x], x) ,do: true
-  defp is_gameover?([_,_,x,_,x,_,x,_,_], x) ,do: true
-  defp is_gameover?(_board, _player_id) ,do: false
+  defp is_gameover([x,x,x,_,_,_,_,_,_], x) ,do: %{result: true, pattern: [0,1,2]}
+  defp is_gameover([_,_,_,x,x,x,_,_,_], x) ,do: %{result: true, pattern: [3,4,5]}
+  defp is_gameover([_,_,_,_,_,_,x,x,x], x) ,do: %{result: true, pattern: [6,7,8]}
+  defp is_gameover([x,_,_,x,_,_,x,_,_], x) ,do: %{result: true, pattern: [0,3,6]}
+  defp is_gameover([_,x,_,_,x,_,_,x,_], x) ,do: %{result: true, pattern: [1,4,7]}
+  defp is_gameover([_,_,x,_,_,x,_,_,x], x) ,do: %{result: true, pattern: [2,5,8]}
+  defp is_gameover([x,_,_,_,x,_,_,_,x], x) ,do: %{result: true, pattern: [0,4,8]}
+  defp is_gameover([_,_,x,_,x,_,x,_,_], x) ,do: %{result: true, pattern: [2,4,6]}
+  defp is_gameover(_board, _player_id) ,do: %{result: false, pattern: []}
 
 end

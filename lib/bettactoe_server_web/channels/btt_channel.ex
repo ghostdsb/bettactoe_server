@@ -36,7 +36,7 @@ defmodule BettactoeServerWeb.BttChannel do
     |> BttRoom.move(move_data["pos"])
     cond do
       gs.gameover.state === true ->
-        broadcast(socket, "game_res", %{ board: gs.board, winner: gs.gameover.winner})
+        broadcast(socket, "game_res", %{ board: gs.board, winner: gs.gameover.winner, pattern: gs.gameover.pattern})
       true ->
         broadcast(socket, "move_res", %{
           "board" => gs.board,
