@@ -141,10 +141,10 @@ defmodule Garuda.Matchmaker.MatchmakerFunction do
   end
 
   defp is_room_open?(room_name) do
-    room_population = room_name |> getmap_players_in_room()
+    room_population = room_name |> getmap_players_in_room() |> IO.inspect()
 
-    case room_population do
-      [] -> false
+    case Enum.count(room_population) do
+      0 -> false
       _ -> true
     end
   end

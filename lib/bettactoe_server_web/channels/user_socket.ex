@@ -3,6 +3,8 @@ defmodule BettactoeServerWeb.UserSocket do
 
   ## Channels
   channel "btt:*", BettactoeServerWeb.BttChannel
+  channel "lobby:mm", BettactoeServerWeb.LobbyMatchmakerChannel
+  channel "lobby:btt", BettactoeServerWeb.LobbyGameChannel
   channel "garuda_matchmaker:*", Garuda.Matchmaker.MatchmakerChannel
 
   # Socket params are passed from the client and can
