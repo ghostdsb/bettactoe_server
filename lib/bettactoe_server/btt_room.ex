@@ -163,7 +163,7 @@ defmodule BettactoeServer.BttRoom do
   end
 
   defp handle_bet_player_1(game_state, player_id, bet_value) do
-    %{game_state |
+    gs = %{game_state |
       player_1: %{
         id:  player_id,
         bet: bet_value,
@@ -171,10 +171,14 @@ defmodule BettactoeServer.BttRoom do
         status: "move"
       }
     }
+    cond do
+      game_state.turn === "continue" -> %{gs | turn: "waiting"}
+      true -> gs
+    end
   end
 
   defp handle_bet_player_2(game_state, player_id, bet_value) do
-    %{game_state |
+    gs = %{game_state |
       player_2: %{
         id:  player_id,
         bet: bet_value,
@@ -182,6 +186,10 @@ defmodule BettactoeServer.BttRoom do
         status: "move"
       }
     }
+    cond do
+      game_state.turn === "continue" -> %{gs | turn: "waiting"}
+      true -> gs
+    end
   end
 
   defp update_move_status(game_state) do
@@ -190,20 +198,20 @@ defmodule BettactoeServer.BttRoom do
         bet_winner(game_state) === 1 -> %{game_state | turn: hd(game_state.player_list) }
         bet_winner(game_state) === 2 -> %{game_state | turn: hd(tl(game_state.player_list)) }
         true -> %{game_state |
-        player_1: %{
-          id:  game_state.player_1.id,
-          bet: 0,
-          balance: game_state.player_1.balance,
-          status: "bet"
-        },
-        player_2: %{
-          id:  game_state.player_2.id,
-          bet: 0,
-          balance: game_state.player_2.balance,
-          status: "bet"
-        },
-        turn: "continue"
-      }
+          player_1: %{
+            id:  game_state.player_1.id,
+            bet: 0,
+            balance: game_state.player_1.balance,
+            status: "bet"
+          },
+          player_2: %{
+            id:  game_state.player_2.id,
+            bet: 0,
+            balance: game_state.player_2.balance,
+            status: "bet"
+          },
+          turn: "continue"
+        }
       end
       true -> game_state
     end

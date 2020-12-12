@@ -18,7 +18,7 @@ defmodule BettactoeServerWeb.BttChannel do
     |> BttRoom.bet(bet_data["playerId"], bet_data["bet"])
 
     cond do
-      gs.turn === nil ->
+      gs.turn === nil || gs.turn === "waiting"->
         IO.puts("waiting for other player")
       true ->
         broadcast(socket, "bet_res", %{

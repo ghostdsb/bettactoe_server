@@ -1,6 +1,7 @@
 defmodule Garuda.Matchmaker.MatchmakerChannel do
   use Phoenix.Channel
   require Logger
+  alias BettactoeServerWeb.Presence
   alias Garuda.Matchmaker.MatchmakerFunction
   import Garuda.Matchmaker.MatchmakerConstants
 
@@ -25,6 +26,7 @@ defmodule Garuda.Matchmaker.MatchmakerChannel do
     with player_details <- add_pid(player_details),
          player_details <- add_player_id(player_details, socket),
          {:ok, reply} <- handle_matchmaking_mode(player_details) do
+      Process.send_after(self(), "matchmaker_joined", 100)
       IO.puts("MATCHMAKING REPLY  =>  #{inspect(reply)}")
       {:ok, socket}
     else
@@ -41,6 +43,15 @@ defmodule Garuda.Matchmaker.MatchmakerChannel do
 
   def handle_info({"match_maker_result", match_details}, socket) do
     send_matchdata(match_details, socket)
+    {:noreply, socket}
+  end
+
+  def handle_info("matchmaker_joined", socket) do
+    {:ok, _} = Presence.track(socket, socket.assigns.player_id, %{
+      online_at: inspect(System.system_time(:second))
+    })
+
+    push(socket, "presence_state", Presence.list(socket))
     {:noreply, socket}
   end
 

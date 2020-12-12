@@ -14,6 +14,7 @@ defmodule BettactoeServer.Application do
       # Start the PubSub system
       {Phoenix.PubSub, name: BettactoeServer.PubSub},
       # Start the Endpoint (http/https)
+      BettactoeServerWeb.Presence,
       BettactoeServerWeb.Endpoint,
       Garuda.Matchmaker.MatchmakerSupervisor,
       {Registry, keys: :unique, name: BettactoeServerWeb.GameRegistry},
