@@ -21,7 +21,8 @@ defmodule BettactoeServerWeb.UserSocket do
   @impl true
   def connect(params, socket, _connect_info) do
     IO.puts("conn params #{inspect(params)}")
-    {:ok, assign(socket, :player_id, params["playerId"])}
+    socket = socket |> assign(:player_id, params["playerId"])
+    {:ok, socket}
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:

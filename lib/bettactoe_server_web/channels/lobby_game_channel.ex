@@ -17,7 +17,7 @@ defmodule BettactoeServerWeb.LobbyGameChannel do
       online_at: inspect(System.system_time(:second))
     })
 
-    push(socket, "presence_game_state", Presence.list(socket))
+    push(socket, "presence_game_state", Presence.list("lobby:btt"))
     {:noreply, socket}
   end
 
