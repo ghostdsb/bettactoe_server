@@ -9,7 +9,7 @@ defmodule BettactoeServer.BttRoom do
   if it comes from the database, an external API or others.
   """
 
-  use GenServer
+  use GenServer, restart: :temporary
 
   @derive Jason.Encoder
   defstruct(
@@ -79,7 +79,15 @@ defmodule BettactoeServer.BttRoom do
 
   def handle_call({"move", index}, _from, game_state) do
     game_state = game_state |> place_mark(index)
-    {:reply, game_state, game_state}
+    match_id = game_state.match_id
+    n_game_state =
+    cond do
+      game_state.gameover.state === true ->
+        set_match_id(match_id)
+      true ->
+        game_state
+    end
+    {:reply, game_state, n_game_state}
   end
 
   #HELPER FUNCTIONS################################

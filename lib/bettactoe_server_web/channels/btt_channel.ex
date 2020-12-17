@@ -16,7 +16,7 @@ defmodule BettactoeServerWeb.BttChannel do
     gs =
       Records.via_tuple(socket.assigns.match_id)
     |> BttRoom.bet(bet_data["playerId"], bet_data["bet"])
-
+    IO.puts("after bet gs: #{inspect(gs)}")
     cond do
       gs.turn === nil || gs.turn === "waiting"->
         IO.puts("waiting for other player")
